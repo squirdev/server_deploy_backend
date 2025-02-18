@@ -361,30 +361,30 @@
 				// done(false)
 			},
 			async getNotice() {
-				let data = await api.getTopNotice();
-				console.log(data)
-				if (data.data.content) {
-					if (localStorage.getItem('noticeId')) {
-						if (localStorage.getItem('noticeId') != data.data.id) {
-							this.noticeContent = data.data.content
-							this.noticeId = data.data.id
-							this.showNotice = true
-						}
-					} else {
-						this.noticeContent = data.data.content
-						this.noticeId = data.data.id
-						this.showNotice = true
-					}
+				// let data = await api.getTopNotice();
+				// console.log(data)
+				// if (data.data.content) {
+				// 	if (localStorage.getItem('noticeId')) {
+				// 		if (localStorage.getItem('noticeId') != data.data.id) {
+				// 			this.noticeContent = data.data.content
+				// 			this.noticeId = data.data.id
+				// 			this.showNotice = true
+				// 		}
+				// 	} else {
+				// 		this.noticeContent = data.data.content
+				// 		this.noticeId = data.data.id
+				// 		this.showNotice = true
+				// 	}
 
-					// Dialog.alert({
-					// title: "公告",
-					// closeOnClickOverlay: true,
-					// confirmButtonText: "好的",
-					// message: data.data.content,
-					// }).then(() => {
-					// // on close
-					// });
-				}
+				// 	// Dialog.alert({
+				// 	// title: "公告",
+				// 	// closeOnClickOverlay: true,
+				// 	// confirmButtonText: "好的",
+				// 	// message: data.data.content,
+				// 	// }).then(() => {
+				// 	// // on close
+				// 	// });
+				// }
 			},
 			async getkline(baseTimestamp = Date.now(), basePrice = 5000, dataSize = 800) {
 				var opt = {

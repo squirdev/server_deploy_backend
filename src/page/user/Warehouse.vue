@@ -29,20 +29,35 @@
 							</p>
 						</div>
 						<div class="oper-btns">
-							<div class="dr" v-if="chicangidx == 0" @click="showPingCangDialog(item)"> 卖出 </div>
-							<div class="dr" v-if="chicangidx == 0" @click="showBuCangDialog(item)"> 买入 </div>
-
+							<div 
+  								class="dr" 
+  								:class="{ disabled: isChineseHoliday() }"
+  								v-if="chicangidx == 0"
+  								@click="!isChineseHoliday() && showPingCangDialog(item)" 
+  								:title="isChineseHoliday() ? '今天是假期，无法卖出股票' : ''"
+							>
+  								卖出
+							</div>
+							<div
+  								class="dr" 
+  								:class="{ disabled: isChineseHoliday() }"
+  								v-if="chicangidx == 0" 
+  								@click="!isChineseHoliday() && showBuCangDialog(item)" 
+  								:title="isChineseHoliday() ? '今天是假期，无法买入股票' : ''"
+							>
+								买入
+							</div>
 						</div>
 
 
 					</div>
 					<!--  -->
 					<div class="fudo" v-if="chicangidx == 0 &item.ykl==0">
-						<h6> 最新 <span :class="item.profitAndLose-item.orderFee>0?'red':'green'" >{{ item.now_price }}元/股  </span></h6>
+						<h6> 最新<span :class="item.profitAndLose-item.orderFee>0?'red':'green'" >{{ (item.now_price/100).toFixed(4) }}元/手  </span></h6>
 						<p>{{ item.buyOrderTime | gettime }}</p>
 					</div>
 					<div class="fudo" v-if="chicangidx == 0 &item.ykl!=0">
-						<h6> 最新 <span :class="item.profitAndLose-item.orderFee>0?'red':'green'" >{{ item.now_price }}元/股  {{ item.ykl }}%</span></h6>
+						<h6> 最新 <span :class="item.profitAndLose-item.orderFee>0?'red':'green'" >{{ (item.now_price/100).toFixed(4) }}元/手  {{ item.ykl }}%</span></h6>
 						<p>{{ item.buyOrderTime | gettime }}</p>
 					</div>
 					<div class="fudo" v-else>
@@ -65,9 +80,9 @@
 					<div class="plkm">
 						
 						<p><span>买入价格</span><a
-								:class="item.profitAndLose-item.orderFee>0?'red':'green'">{{item.buyOrderPrice}}/股</a></p>
+								:class="item.profitAndLose-item.orderFee>0?'red':'green'">{{(item.buyOrderPrice/100)}}/手</a></p>
 						<p><span>买入天数</span><a :class="item.profitAndLose-item.orderFee>0?'red':'green'">{{item.orderStayDays}}天</a></p> 
-						<p><span>数量</span><a :class="item.profitAndLose-item.orderFee>0?'red':'green'">{{item.orderNum}}股</a></p>
+						<p><span>数量</span><a :class="item.profitAndLose-item.orderFee>0?'red':'green'">{{(item.orderNum/100)}}手</a></p>
 						<p><span>杠杆</span><a :class="item.profitAndLose-item.orderFee>0?'red':'green'">{{item.orderLever}}倍</a></p>
 						<p><span>保证金</span><a
 								:class="item.profitAndLose-item.orderFee>0?'red':'green'">{{item.orderTotalPrice / item.orderLever}}元</a>
@@ -99,7 +114,7 @@
 						<div class="dr" v-if="chicangidx == 0"> 平仓 </div>
 					</div>
 					<div class="fudo" v-if="chicangidx == 0">
-						<h6> 最新 <span :class="item.allProfitAndLose>0?'red':'green'">{{ item.now_price }}元/股</span></h6>
+						<h6> 最新 <span :class="item.allProfitAndLose>0?'red':'green'">{{ (item.now_price/100).toFixed(4) }}元/手</span></h6>
 						<p>{{ item.buyOrderTime | gettime }}</p>
 					</div>
 					<div class="fudo" v-else>
@@ -117,8 +132,8 @@
 					</div>
 					<div class="plkm">
 						<p><span>买入价格</span><a
-								:class="item.allProfitAndLose>0?'red':'green'">{{item.buyOrderPrice}}/股</a></p>
-						<p><span>数量</span><a :class="item.allProfitAndLose>0?'red':'green'">{{item.orderNum}}股</a></p>
+								:class="item.allProfitAndLose>0?'red':'green'">{{(item.buyOrderPrice/100).toFixed(4)}}/手</a></p>
+						<p><span>数量</span><a :class="item.allProfitAndLose>0?'red':'green'">{{item.orderNum/100}}手</a></p>
 						<p><span>杠杆</span><a :class="item.allProfitAndLose>0?'red':'green'">{{item.orderLever}}倍</a></p>
 						<p><span>保证金</span><a
 								:class="item.allProfitAndLose>0?'red':'green'">{{item.orderTotalPrice / item.orderLever}}元</a>
@@ -128,7 +143,7 @@
 						<p><span>卖出手续费</span><a
 								:class="item.allProfitAndLose>0?'red':'green'">{{item.sellOrderFee}}元</a></p>
 						<p><span>卖出价格</span><a
-								:class="item.allProfitAndLose>0?'red':'green'">{{item.sellOrderPrice}}/股</a></p>
+								:class="item.allProfitAndLose>0?'red':'green'">{{(item.sellOrderPrice/100).toFixed(4)}}/手</a></p>
 						<p><span>市值</span><a
 								:class="item.allProfitAndLose>0?'red':'green'">{{item.orderTotalPrice}}元</a></p>	
 						
@@ -151,10 +166,10 @@
 				<div class="plkm detail">
 					<div class="detailItem"><span>股票名称：</span><a class="red">{{isShowPingCangInfo.stockName}}</a></div>
 					<div class="detailItem"><span>股票代码：</span><a class="red">{{isShowPingCangInfo.stockGid}}</a></div>
-					<div class="detailItem"><span>当前价格：</span><a class="red">{{isShowPingCangInfo.now_price}}/股</a>
+					<div class="detailItem"><span>当前价格：</span><a class="red">{{(isShowPingCangInfo.now_price/100).toFixed(4)}}/手</a>
 					</div>
-					<div class="detailItem"><span>持有数量：</span><a class="red">{{isShowPingCangInfo.orderNum}}股</a></div>
-					<div class="detailItem"><span>可用数量：</span><a class="red">{{isShowPingCangInfo.canSellNum}}股</a>
+					<div class="detailItem"><span>持有数量：</span><a class="red">{{(isShowPingCangInfo.orderNum/100).toFixed(4)}}手</a></div>
+					<div class="detailItem"><span>可用数量：</span><a class="red">{{(isShowPingCangInfo.canSellNum/100).toFixed(4)}}手</a>
 					</div>
 					<div class="detailItem"><span>浮动盈亏：</span><a class="red">{{isShowPingCangInfo.profitAndLose}}元</a>
 					</div>
@@ -172,8 +187,8 @@
 				<div class="plkm detail">
 					<div class="detailItem"><span>股票名称：</span><a class="red">{{isShowBuCangInfo.stockName}}</a></div>
 					<div class="detailItem"><span>股票代码：</span><a class="red">{{isShowBuCangInfo.stockGid}}</a></div>
-					<div class="detailItem"><span>当前价格：</span><a class="red">{{isShowBuCangInfo.now_price}}/股</a></div>
-					<div class="detailItem"><span>持有数量：</span><a class="red">{{isShowBuCangInfo.orderNum}}股</a></div>
+					<div class="detailItem"><span>当前价格：</span><a class="red">{{(isShowBuCangInfo.now_price/100).toFixed(4)}}/手</a></div>
+					<div class="detailItem"><span>持有数量：</span><a class="red">{{(isShowBuCangInfo.orderNum/100)}}手</a></div>
 				</div>
 				<div style="padding: 20px 0;border-bottom: solid 1px #ccc;">
 					<van-field style="font-size: 15px;" v-model="buyNum" type="digit" label="补仓数量"
@@ -198,6 +213,8 @@
 		getRealTimeData
 	} from '../../axios/api'
 	export default {
+
+		
 		components: {
 
 		},
@@ -249,6 +266,49 @@
 		},
 
 		methods: {
+			isChineseHoliday() {
+				const today = new Date();
+				const year = today.getFullYear();
+				const month = today.getMonth() + 1;
+				const day = today.getDate();
+				const weekDay = today.getDay();
+
+				const fixedHolidays = [
+					`${year}-01-01`,
+					`${year}-01-28`, 
+					`${year}-01-29`, 
+					`${year}-01-30`, 
+					`${year}-01-31`, 
+					`${year}-02-01`,
+					`${year}-02-02`,
+					`${year}-02-03`,
+					`${year}-02-04`,
+					`${year}-04-04`,
+					`${year}-04-05`,
+					`${year}-05-01`,
+					`${year}-05-02`,
+					`${year}-05-03`,
+					`${year}-05-04`,
+					`${year}-05-05`,
+					`${year}-06-01`,
+					`${year}-06-02`,
+					`${year}-10-01`,
+					`${year}-10-02`,
+					`${year}-10-03`,
+					`${year}-10-04`,
+					`${year}-10-05`,
+					`${year}-10-06`,
+					`${year}-10-07`,
+					`${year}-10-08`,
+				];
+
+				//check if Sunday or Saturday
+				if (weekDay === 0 || weekDay === 6) return true;
+						
+				const todayStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+				console.log(todayStr)
+				return fixedHolidays.includes(todayStr);
+			},
 			refreshCurrPrice() {
 				if (!this.tabsPositionNumArr || this.tabsPositionNumArr.length === 0) {
 					return;
@@ -599,6 +659,7 @@
 				}
 				this.$store.state.user = this.user
 			},
+			
 		},
 		filters: {
 			gettime(time) {
@@ -632,6 +693,7 @@
 			}
 		}
 	}
+	
 </script>
 
 
@@ -739,6 +801,7 @@
 			width: 100%;
 			background: #e0e0e0;
 		}
+		
 	}
 
 	.chicanglistmain {
@@ -900,7 +963,13 @@
 		}
 	}
 
-
+	/* Disabled state */
+	.dr.disabled {
+		background-color: #ffffff !important; /* More white when disabled */
+		color: #bbb !important; /* Lighter text */
+		cursor: not-allowed !important; /* Disable cursor */
+		opacity: 0.6; /* Make it look disabled */
+		}
 	.oper-btns {
 		display: flex;
 

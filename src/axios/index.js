@@ -1,127 +1,115 @@
-// 蓝湖的话，暂时用这个账号打开：120563901@qq.com   cxcxx1205
-// 手机端：http://www.shehua56.com/wap2.0/
-// 账户：15888888888     密码:123456
-
 import axios from 'axios' // 引入axios
 import qs from 'qs' // 引入qs
-// import store from '@/store'
 import router from '@/router'
 import APIUrl from './api.url' // 引入api.url.js
 import { Toast } from "mint-ui";
 
-
-// axios 默认配置  更多配置查看Axios中文文档
+// Axios 默认配置
 axios.defaults.timeout = 50000 // 超时默认值
 axios.defaults.baseURL = APIUrl.baseURL // 默认baseURL
 axios.defaults.responseType = 'json' // 默认数据响应类型
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8'
-// axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.withCredentials = true // 表示跨域请求时是否需要使用凭证
+axios.defaults.withCredentials = true // 允许跨域请求时携带凭证
 
-// http request 拦截器
-// 在ajax发送之前拦截 比如对所有请求统一添加header token
+// 🔹 HTTP 请求拦截器
 axios.interceptors.request.use(
-  config => {
-    config.headers["lang"] = localStorage.getItem("language") ? localStorage.getItem("language") : "zh-CN";
-    if (window.localStorage.getItem("USERTOKEN")) {
-      // config.headers.Authorization = `USER_TOKEN = ${store.state.token}`;
-      config.headers["USERTOKEN"] = window.localStorage.getItem("USERTOKEN");
-    }
-    // console.log(config)
-    return config
-  },
-  err => {
-    return Promise.reject(err)
-  }
-)
+  (config) => {
+    try {
+      const lang = localStorage.getItem("language") || "zh-CN";
+      config.headers["lang"] = lang;
 
-// http response 拦截器
-// ajax请求回调之前拦截 对请求返回的信息做统一处理 比如error为401无权限则跳转到登陆界面
-axios.interceptors.response.use(
-  response => {
-    // switch (response.data && response.data.success) {
-    //   case false:
-    //     response.data.msg = '您还未登录,请先登录'
-    //     //console.log(response.data)
-    //     router.replace({
-    //       path: 'openaccount'
-    //     })
-    //     break
-    //   default:
-    //     break
-    // }
-    if (response.data && response.data.msg) {
-      if (response.data.msg.indexOf('請先登錄') > -1 || response.data.msg.indexOf('請先登陸') > -1) {
-        // alert(1)
-        response.data.msg = '您还未登录，请先登录'
-        Toast('您还未登录，请先登录')
-        //console.log(response.data)
-        window.localStorage.removeItem('tokens')
-        setTimeout(() => {
-          router.replace({
-            path: '/login'
-          })
-        }, 1000)
+      const userToken = localStorage.getItem("USERTOKEN");
+      if (userToken) {
+        config.headers["USERTOKEN"] = userToken;
+        console.log("HEADER USERTOKEN:", userToken);
       }
+    } catch (error) {
+      console.error("Error accessing localStorage:", error);
     }
 
-    return response
+    return config;
   },
-  error => {
-    // console.log(error,'error');
-    return Promise.reject(error)
+  (error) => Promise.reject(error)
+);
+
+// 🔹 HTTP 响应拦截器
+axios.interceptors.response.use(
+  (response) => {
+    try {
+      if (response.data && response.data.msg) {
+
+        console.log("RESPONSE:", response);
+
+        if (response.data.msg.includes("請先登錄") || response.data.msg.includes("請先登陸")) {
+          Toast("您还未登录，请先登录");
+          localStorage.removeItem("USERTOKEN");
+
+          setTimeout(() => {
+            router.replace({ path: "/login" });
+          }, 1000);
+        }
+      }
+    } catch (error) {
+      console.error("Error processing response:", error);
+    }
+
+    return response;
+  },
+  (error) => {
+    console.error("Axios request error:", error);
+    return Promise.reject(error);
   }
-)
+);
 
-export default axios // 这句千万不能漏下！！！
+export default axios;
 
 /**
- * post 方法封装
- * @param url
- * @param data
+ * 封装 POST 方法
+ * @param {string} url - 请求地址
+ * @param {object} data - 请求数据
+ * @param {boolean} [out] - 是否打印请求日志（可选）
  * @returns {Promise}
  */
-export function post(url, data = {}, out) {
-  return new Promise((resolve, reject) => {
-    axios.post(url, qs.stringify(data))
-      .then(response => {
-        resolve(response.data)
-      }, err => {
-        reject(err)
-      })
-  })
-}
-
-
-export function postJson(url, data = {}, out) {
-  return new Promise((resolve, reject) => {
-    axios.post(url, data)
-      .then(response => {
-        resolve(response.data)
-      }, err => {
-        reject(err)
-      })
-  })
+export function post(url, data = {}, out = false) {
+  if (out) console.log("POST Request:", url, data);
+  return axios.post(url, qs.stringify(data))
+    .then(response => response.data)
+    .catch(error => {
+      console.error("POST Error:", error);
+      return Promise.reject(error);
+    });
 }
 
 /**
- * get 方法封装
- * @param url
- * @param data
+ * 封装 POST JSON 方法
+ * @param {string} url - 请求地址
+ * @param {object} data - JSON 格式请求数据
+ * @param {boolean} [out] - 是否打印请求日志（可选）
  * @returns {Promise}
  */
-export function get(url, data = {}) {
-  return new Promise((resolve, reject) => {
-    axios.get(url, { params: data })
-      .then(response => {
-        resolve(response.data)
-      }, err => {
-        reject(err)
-      })
-  })
+export function postJson(url, data = {}, out = false) {
+  if (out) console.log("POST JSON Request:", url, data);
+  return axios.post(url, data)
+    .then(response => response.data)
+    .catch(error => {
+      console.error("POST JSON Error:", error);
+      return Promise.reject(error);
+    });
 }
 
 /**
- * 其他delete等的封装类似
- * 可以查看中文文档 自行封装
+ * 封装 GET 方法
+ * @param {string} url - 请求地址
+ * @param {object} data - 请求参数
+ * @param {boolean} [out] - 是否打印请求日志（可选）
+ * @returns {Promise}
  */
+export function get(url, data = {}, out = false) {
+  if (out) console.log("GET Request:", url, data);
+  return axios.get(url, { params: data })
+    .then(response => response.data)
+    .catch(error => {
+      console.error("GET Error:", error);
+      return Promise.reject(error);
+    });
+}

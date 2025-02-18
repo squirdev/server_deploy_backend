@@ -87,11 +87,11 @@
                     </div>
                 </div>
                 <div class="plkm">
-                    <p><span>买入价格</span><a class="red">{{item.buyOrderPrice}}/股</a></p>
-                    <p><span>数量</span><a class="red">{{item.orderNum}}股</a></p>
+                    <p><span>买入价格</span><a class="red">{{(item.buyOrderPrice/100).toFixed(4)}}/手</a></p>
+                    <p><span>数量</span><a class="red">{{(item.orderNum/100).toFixed(4)}}手</a></p>
                     <p><span>买入手续费</span><a class="red">{{item.orderFee}}</a></p>
                     <p><span>股值</span><a class="red">{{item.orderTotalPrice}}</a></p>
-                    <p v-if="chicangidx == 1"><span>买入价格</span><a class="red">{{item.buyOrderPrice}}/股</a></p>
+                    <p v-if="chicangidx == 1"><span>买入价格</span><a class="red">{{(item.buyOrderPrice/100).toFixed(4)}}/手</a></p>
                     <!-- <p v-if="chicangidx == 1"><span>递延费</span><a class="red">{{item.orderStayFee}}</a></p> -->
                 </div>
             </div>

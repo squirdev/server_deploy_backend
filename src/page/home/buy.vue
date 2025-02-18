@@ -105,7 +105,7 @@
     <div class="box-tab">
       <div class="tab-con">
         <p class="text-left page-part">
-          <span class="">{{selectNumber?selectNumber*100:autoNumber*100}}股</span>
+          <span class="">{{selectNumber?selectNumber:autoNumber}}手</span>
           <span class="pull-right">市值 {{price?price:0}}元</span>
         </p>
         <p class="text-left page-part">

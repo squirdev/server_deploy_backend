@@ -9,7 +9,7 @@
 
         <li   v-for="(item) in list" :key="item.key" class="czli">
           <div class="ddh">
-            <h6 > 订单号：{{item.bankNo}} </h6>
+            <h6 > 银行卡号:{{summarized_str(item.bankNo)}} </h6>
             <h5 >{{item.withAmt}}</h5>
             <p  class="riqi">{{ new Date(item.applyTime) | timeFormat }}</p>
             <p  class="status"><span  class="jishi"></span> {{ item.withStatus == 1 ? '提现成功' : item.withStatus == 2 ? '提现失败' : item.withStatus == 3 ? '订单取消' : '审核中' }} </p>
@@ -147,6 +147,9 @@ export default {
         Toast(data.msg)
       }
       // });
+    },
+    summarized_str(data) {
+      return data.substring(0, 4) + '*'.repeat(data.length - 8) + data.substring(data.length - 4);
     }
   }
 }
