@@ -60,10 +60,11 @@
 						<h6> 最新 <span :class="item.profitAndLose-item.orderFee>0?'red':'green'" >{{ (item.now_price/100).toFixed(4) }}元/手  {{ item.ykl }}%</span></h6>
 						<p>{{ item.buyOrderTime | gettime }}</p>
 					</div>
-					<div class="fudo" v-else>
+					
+					<!-- <div class="fudo" v-else>
 						<h6> 卖出时间 </h6>
 						<p>2022-12-03 13:21</p>
-					</div>
+					</div> -->
 					<div class="fudong redbg">
 						<div class="kuij">
 
@@ -117,10 +118,10 @@
 						<h6> 最新 <span :class="item.allProfitAndLose>0?'red':'green'">{{ (item.now_price/100).toFixed(4) }}元/手</span></h6>
 						<p>{{ item.buyOrderTime | gettime }}</p>
 					</div>
-					<div class="fudo" v-else>
+					<!-- <div class="fudo" v-else>
 						<h6> 卖出时间 </h6>
 						<p>{{item.sellOrderTime | gettime}}</p>
-					</div>
+					</div> -->
 					<div class="fudong redbg">
 						<div class="kuij">
 							<p><span>浮动盈亏：</span><a
@@ -187,7 +188,7 @@
 				<div class="plkm detail">
 					<div class="detailItem"><span>股票名称：</span><a class="red">{{isShowBuCangInfo.stockName}}</a></div>
 					<div class="detailItem"><span>股票代码：</span><a class="red">{{isShowBuCangInfo.stockGid}}</a></div>
-					<div class="detailItem"><span>当前价格：</span><a class="red">{{(isShowBuCangInfo.now_price/100).toFixed(4)}}/手</a></div>
+					<div class="detailItem"><span>当前价格：</span><a class="red">{{(isShowBuCangInfo.now_price*100)}}/手</a></div>
 					<div class="detailItem"><span>持有数量：</span><a class="red">{{(isShowBuCangInfo.orderNum/100)}}手</a></div>
 				</div>
 				<div style="padding: 20px 0;border-bottom: solid 1px #ccc;">

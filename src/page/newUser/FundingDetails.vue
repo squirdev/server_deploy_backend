@@ -6,7 +6,8 @@
             </div>
         </div>
         <div class="head">
-            <div class="thj"><a :class="xz == '0' ? 'xuan' : ''" @click="xuanze(0)">资金明细</a>
+            <div class="thj">
+                <a :class="xz == '0' ? 'xuan' : ''" @click="xuanze(0)">资金明细</a>
                 <a :class="xz == '1' ? 'xuan' : ''" @click="xuanze(1)">充值记录</a>
                 <a :class="xz == '2' ? 'xuan' : ''" @click="xuanze(2)">提现记录</a>
                 <span class="tiaokl" :class="xz == 0 ? 'tiaok1' : xz == 1 ? 'tiaok2' : 'tiaok3'"></span>

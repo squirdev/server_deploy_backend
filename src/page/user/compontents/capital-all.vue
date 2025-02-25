@@ -1,39 +1,136 @@
 <template>
   <div class="wrapper">
-    <!-- <ul class="table-list"
+    <ul class="table-list"
         v-infinite-scroll="loadMore"
         infinite-scroll-disabled="loading"
         infinite-scroll-distance="10">
       <li class="list-body" v-for="item in list" :key="item.key">
-        <div class="capital">
+        <div v-if="item.deType=='买入股票'" class="capital">
+          <div class="col-xs-6">
+            <span>买卖方向:</span>
+            <span class="red pull-right">{{item.deSummary.split("，")[0]}}</span>
+          </div>
           <div>
-            {{item.deType}}
-            <span :class="item.deAmt<0?'pull-right green':'pull-right red'">{{item.deAmt}}</span>
+            <span>股票名称:</span>
+            <span class="red pull-right">{{item.deSummary.split(',')[0].split("，")[1]}}</span>
           </div>
-          <div class="pro clearfix">
-            {{item.deSummary}}
-        
+          <div  class="col-xs-6">
+            <span>扛杆倍数:</span>
+            <span class="pull-right red">10</span>
           </div>
-          
-          <div class="pro clearfix">
-            <div class="col-xs-12 text-right">生成时间:{{new Date(item.addTime) | timeFormat}}</div>
+          <div>
+            <span>保证金:</span>
+            <span class="pull-right red">
+              {{item.deSummary.split(',')[1].split("：")[1] + "," + item.deSummary.split(',')[2]}}
+            </span>
+          </div>
+          <div  class="col-xs-6" >
+            <span>市值:</span>
+            <span class="pull-right red">
+              {{ item.deSummary.split('：')[1].split('.')[0].replace(/,/g, '') +'0'}}
+            </span>
+          </div>
+          <div>
+            <span>买入股数:</span>
+            <span class="pull-right red">
+              {{ item.deSummary.split('：')[3].split('，')[0] }}
+            </span>
+          </div>
+          <div  class="col-xs-6" >
+            <span>买入价格:</span>
+            <span class="pull-right red">
+              {{ item.deSummary.split('，')[1].split('买入价格：')[1]}}
+            </span>
+          </div>
+          <div>
+            <span>买入手续费：</span>
+            <span class="pull-right red">
+              {{ item.deSummary.split('买入手续费：')[1].split(',')[0]}}
+            </span>
+          </div>
+          <div class="col-xs-6"  >
+            <span>印花税:</span>
+            <span class="pull-right red">
+              <!-- <span class="pull-right red">{{ item.deSummary.split("：")[4].split(',')[0] }}</span> -->
+              <span class="pull-right red">
+                {{ (parseFloat(item.deSummary.split('：')[3].split('，')[0]) * parseFloat(item.deSummary.split('，')[1].split('买入价格：')[1]) * 3 / 10000).toFixed(2) }}
+              </span>
+              
+              <!-- {{ item.deSummary.split('：')[3].split('，')[0] }} * {{ item.deSummary.split('，')[1].split('买入价格：')[1]}} * 3 / 10000 -->
+            </span>
+          </div>
+          <div>
+            <span>买入时间</span>
+            <span class="pull-right red">
+              {{ new Date(item.addTime) | timeFormat}}
+            </span>
           </div>
         </div>
-
+        <div v-if="item.deType=='总盈亏'" class="capital">
+          <div  class="col-xs-6">
+            <span>买卖方向:</span>
+            <span class="red pull-right">{{item.deSummary.split("，")[0]}}</span>
+          </div>
+          <div>
+            <span>股票名称:</span>
+            <span class="red pull-right">{{item.deSummary.split(',')[0].split("，")[1]}}</span>
+          </div>
+          <div  class="col-xs-6">
+            <span>占用本金:</span>
+            <span class="pull-right red">{{ item.deSummary.split("：")[1].split(',')[0]  }}</span>
+          </div>
+          <div  >
+            <span>总手续费:</span>
+            <span class="pull-right red">
+              <span class="pull-right red">{{ item.deSummary.split("：")[2].split(',')[0]  }}</span>
+            </span>
+          </div>
+          <div class="col-xs-6" >
+            <span>卖出手续费:</span>
+            <span class="pull-right red">
+              <span class="pull-right red">{{ item.deSummary.split("：")[3].split(',')[0]  }}</span>
+            </span>
+          </div>
+          <div  >
+            <span>印花税:</span>
+            <span class="pull-right red">
+              <span class="pull-right red">{{ item.deSummary.split("：")[4].split(',')[0]  }}</span>
+            </span>
+          </div>
+          <div  class="col-xs-6">
+            <span>盈亏:</span>
+            <span class="pull-right red">
+              <span class="pull-right red">{{ item.deSummary.split("：")[5].split('，')[0]  }}</span>
+            </span>
+          </div>
+          <div>
+            <span>总盈亏:</span>
+            <span class="pull-right red">
+              <span class="pull-right red">{{ item.deSummary.split("：")[6] }}</span>
+            </span>
+          </div>
+          <div >
+            <span>卖出时间</span>
+            <span class="pull-right red">
+              {{ new Date(item.addTime) | timeFormat}}
+            </span>
+        </div>
+        </div>
       </li>
-    </ul> -->
+    </ul>
 
 
-    <ul  class="czjl">
+    <!-- <ul  class="czjl">
       <li  class="czli lizj"  v-for="item in list" :key="item.key">
         <div  class="title">
           <p > {{item.deSummary}} </p>
-          <h3 ><span >{{new Date(item.addTime) | timeFormat}}</span><a >{{item.deAmt}}</a></h3>
+          <h3 >
+            <span >{{new Date(item.addTime) | timeFormat}}</span>
+            <a >{{item.deAmt}}</a>
+          </h3>
         </div>
       </li>
-      
-     
-    </ul>
+    </ul> -->
 
 
     <div v-show="loading" class="load-all text-center">
@@ -79,6 +176,7 @@ export default {
       if (data.status === 0) {
         data.data.list.forEach(element => {
           this.list.push(element)
+          console.log("XXXXXX", element)
         })
         this.total = data.data.total
       } else {
